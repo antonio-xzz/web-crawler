@@ -78,6 +78,7 @@ This project is a **web crawler** built using **FastAPI** for the backend and **
   ```
 
 # Project Structure
+```
 .
 ├── backend/
 │   ├── app/
@@ -92,6 +93,7 @@ This project is a **web crawler** built using **FastAPI** for the backend and **
 │   │   └── App.tsx       # Main React entry point
 │   └── package.json      # Frontend dependencies
 └── README.md             # Project readme
+```
 
-## Get .envs
+## Get .env
 cp .env-example .env
