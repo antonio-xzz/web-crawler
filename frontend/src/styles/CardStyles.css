@@ -1,0 +1,45 @@
+.card-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 1.5rem 2.5rem;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  gap: 10px;
+  background-color: #fff;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;  
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+}
+
+.card-category {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  p {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0
+  }
+
+  span {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+}

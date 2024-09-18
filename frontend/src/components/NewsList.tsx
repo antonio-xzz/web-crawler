@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   getEntries,
   filterByComments,
   filterByPoints,
 } from "../services/newsServices";
 import "../styles/NewsList.css";
+import Card from "./Card";
+import Loader from "./Loader";
 
 interface NewsEntry {
   number: number;
@@ -16,11 +18,10 @@ interface NewsEntry {
 const NewsList: React.FC = () => {
   const [entries, setEntries] = useState<NewsEntry[]>([] as NewsEntry[]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [currentFilter, setCurrentFilter] = useState<string>("");
+  const [currentFilter, setCurrentFilter] = useState<string>("default");
 
   const fetchEntries = async () => {
     setLoading(true);
-    setCurrentFilter("entries");
     try {
       const data = await getEntries();
       if (Array.isArray(data)) {
@@ -34,10 +35,9 @@ const NewsList: React.FC = () => {
     }
     setLoading(false);
   };
-  
+
   const handleFilterByComments = async () => {
     setLoading(true);
-    setCurrentFilter("comments");
     try {
       const data = await filterByComments();
       if (Array.isArray(data)) {
@@ -51,10 +51,9 @@ const NewsList: React.FC = () => {
     }
     setLoading(false);
   };
-  
+
   const handleFilterByPoints = async () => {
     setLoading(true);
-    setCurrentFilter("points");
     try {
       const data = await filterByPoints();
       if (Array.isArray(data)) {
@@ -69,56 +68,50 @@ const NewsList: React.FC = () => {
     setLoading(false);
   };
 
+  useEffect(() => {
+    fetchEntries();
+  }, []);
+
+  useEffect(() => {
+    if (currentFilter === "comments") {
+      handleFilterByComments();
+    } else if (currentFilter === "points") {
+      handleFilterByPoints();
+    } else {
+      fetchEntries();
+    }
+  }, [currentFilter]);
+
   return (
-    <div className="news-list">
-      <div className="button-box">
-        <button onClick={fetchEntries}>Get Entries</button>
-        {currentFilter === "entries" && !loading && (
-          <div className="response-box">
-            {entries.map((entry) => (
-              <div key={entry.number} className="entry-box">
-                <h3>{entry.title}</h3>
-                <p>Points: {entry.points}</p>
-                <p>Comments: {entry.comments}</p>
-              </div>
+    <main className="main">
+      <div className="header-wrapper">
+        <header className="header">
+          <h1>Entries</h1>
+          <select onChange={(e) => setCurrentFilter(e.target.value)}>
+            <option value="default">All entries</option>
+            <option value="points" onClick={handleFilterByPoints}>
+              Filter by points
+            </option>
+            <option value="comments" onClick={handleFilterByComments}>
+              Filter by comments
+            </option>
+          </select>
+        </header>
+      </div>
+      {loading ? <Loader /> 
+        : <div className="container">
+          <div className="cards-wrapper">
+            {!loading && entries.map((entry) => (
+              <Card
+                key={entry.number}
+                title={entry.title}
+                points={entry.points}
+                comments={entry.comments}
+              />
             ))}
           </div>
-        )}
-      </div>
-      <div className="button-box">
-        <button onClick={handleFilterByComments}>Filter by Comments</button>
-        {currentFilter === "comments" && !loading && (
-          <div className="response-box">
-            {entries.map((entry) => (
-              <div key={entry.number} className="entry-box">
-                <h3>{entry.title}</h3>
-                <p>Points: {entry.points}</p>
-                <p>Comments: {entry.comments}</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-      <div className="button-box">
-        <button onClick={handleFilterByPoints}>Filter by Points</button>
-        {currentFilter === "points" && !loading && (
-          <div className="response-box">
-            {entries.map((entry) => (
-              <div key={entry.number} className="entry-box">
-                <h3>{entry.title}</h3>
-                <p>Points: {entry.points}</p>
-                <p>Comments: {entry.comments}</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-      {loading && (
-        <div className="spinner-container">
-          <div className="spinner"></div>
-        </div>
-      )}
-    </div>
+        </div>}
+    </main>
   );
 };
 
