@@ -1,14 +1,17 @@
+import os
 import uvicorn
 
 from api import news_router
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+frontend_url = os.getenv("FRONTEND_URL")
+
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["frontend_url"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
